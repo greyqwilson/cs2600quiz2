@@ -60,12 +60,42 @@ void playGame(int maxN){
     return;
 }
 
+void readMaxSaveFile(FILE *file, int *currentmax){
+     file = fopen("maxnumbersave.txt", "r");
+    if (file == NULL){
+        printf("maxnumbersave.txt not found. Continuing.\n");
+    }
+    else{
+        char fileRead[3];
+        while (!feof (file)){
+            if (fgets(fileRead, 3, file) == NULL) break;
+            *currentmax = strtol(fileRead, NULL, 10);
+            printf("Read max number: %i from save file.\n", *currentmax);
+        }
+    }
+    fclose(file);
+}
+
+void writeMaxSaveFile(FILE *file, int *newmax){
+     file = fopen("maxnumbersave.txt", "w");
+    if (file == NULL){
+        printf("maxnumbersave.txt not found. Continuing.\n");
+    }
+    else{
+        fprintf(file, "%i", *newmax);
+        printf("New max written to file!\n");
+    }
+    fclose(file);
+}
 
 int main(){
 
     int menuOption = -1;
     const int MAXNUMBER = 100;
     int currentMaxNumber = 100;
+    FILE *maxSave;
+    readMaxSaveFile(maxSave, &currentMaxNumber);
+
     while (menuOption != 3){
 
         scanf("");
@@ -92,6 +122,7 @@ int main(){
                 }
                 while (currentMaxNumber <= 1 && currentMaxNumber > MAXNUMBER);
                 printf("New max number is now %i \n", currentMaxNumber);
+                writeMaxSaveFile(maxSave, &currentMaxNumber);
 
                 break;
             }
