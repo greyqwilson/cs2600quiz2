@@ -8,6 +8,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
+
+int guesses = 0;
+int wins = 0;
 
 void printMenu(){
     printf("\t\t---- Guess-A-Number Game ----\n");
@@ -17,23 +21,54 @@ void printMenu(){
     printf("Please choose an option from the menu above.\n");
 }
 
-void playGame(){
+void playGame(int maxN){
     int guess = 0;
-    printf("Please enter a number: \n");
-    scanf("%i", &guess);
-    
+    int answer;
+    char stringGuess[maxN];
+    int playing = 1;
+    srand(time(NULL));
+    answer = rand() % maxN;
+
+    while (playing == 1){
+        scanf("");
+        printf("Please enter a number between 0 and %i: \n", maxN);
+        scanf("%s", stringGuess);
+        //Check if q was entered instead of a number. If so, return to main menu
+        if (stringGuess[0] == 'q')
+            return;
+
+        guesses++;
+        guess = strtol(stringGuess, NULL, 10);
+        //Check if number is within bounds
+        if (guess > maxN || guess < 0)
+            continue;
+
+        if (answer == guess){
+            printf("Congratulations! You guessed the correct answer!\n");
+            wins++;
+            return;
+        }
+        else{
+            if (guess > answer){
+                printf("You were over the number.\n");
+            }
+            else{
+                printf("You were below the number.\n");
+            }
+        }
+    }
+    return;
 }
 
-void changeMaxNumber(){
-    
-}
 
 int main(){
 
     int menuOption = -1;
-    int maxNumber = 100;
+    const int MAXNUMBER = 100;
+    int currentMaxNumber = 100;
     while (menuOption != 3){
 
+        scanf("");
         printMenu();
         scanf("%i", &menuOption);
         
@@ -42,21 +77,30 @@ int main(){
             // Play a game
             case 1:
             {
-                playGame();
+                playGame(currentMaxNumber);
                 break;
             }
 
             //change the max number
             case 2:
             {
-                printf("Please enter a new max number:\n");
-                scanf("%i", maxNumber);
+                do {
+                    scanf("");
+                    printf("Please enter a new max number between 1 and %i:\n", MAXNUMBER);
+                    printf("Current max is: %i \n", currentMaxNumber);
+                    scanf("%i", &currentMaxNumber);
+                }
+                while (currentMaxNumber <= 1 && currentMaxNumber > MAXNUMBER);
+                printf("New max number is now %i \n", currentMaxNumber);
+
                 break;
             }
 
             // Quit
             case 3:
             {
+                printf("Thank you for playing!\n");
+                printf("You made %i guesses and won %i times. \n", guesses, wins);
 
                 break;
             }
